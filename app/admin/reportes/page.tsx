@@ -19,6 +19,27 @@ import {
 } from "recharts"
 import { formatCurrency } from "@/lib/utils"
 
+// Interfaces para los tipos de datos
+interface Order {
+  id: string
+  createdAt: any
+  total: number
+  items: Array<{
+    productId: string
+    quantity: number
+  }>
+}
+
+interface Product {
+  id: string
+  name: string
+}
+
+interface User {
+  id: string
+  createdAt: any
+}
+
 // Colores para los gráficos
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"]
 
@@ -36,7 +57,7 @@ export default function ReportesPage() {
         const orders = ordersSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))
+        })) as Order[]
 
         // Agrupar ventas por mes
         const salesByMonth: Record<string, number> = {}
@@ -72,25 +93,76 @@ export default function ReportesPage() {
         setSalesData(formattedSalesData)
 
         // Obtener productos más vendidos
-        // Simulación de datos (en una app real, esto vendría de la base de datos)
-        setTopProducts([
-          { name: "Camiseta Premium", value: 120 },
-          { name: "Zapatillas Runner", value: 85 },
-          { name: "Reloj Inteligente", value: 65 },
-          { name: "Auriculares Bluetooth", value: 45 },
-          { name: "Mochila Urbana", value: 30 },
-        ])
+        const productsSnapshot = await getDocs(collection(db, "products"))
+        const products = productsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Product[]
+
+        // Contar ventas por producto
+        const productSales: Record<string, number> = {}
+        orders.forEach(order => {
+          if (order.items) {
+            order.items.forEach((item) => {
+              if (!productSales[item.productId]) {
+                productSales[item.productId] = 0
+              }
+              productSales[item.productId] += item.quantity
+            })
+          }
+        })
+
+        // Formatear datos de productos más vendidos
+        const topProductsData = Object.entries(productSales)
+          .map(([productId, value]) => {
+            const product = products.find(p => p.id === productId)
+            return {
+              name: product?.name || "Producto desconocido",
+              value: value
+            }
+          })
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 5) // Tomar solo los 5 más vendidos
+
+        setTopProducts(topProductsData)
 
         // Obtener usuarios activos por mes
-        // Simulación de datos (en una app real, esto vendría de la base de datos)
-        setActiveUsers([
-          { month: "1/2023", users: 45 },
-          { month: "2/2023", users: 52 },
-          { month: "3/2023", users: 68 },
-          { month: "4/2023", users: 75 },
-          { month: "5/2023", users: 92 },
-          { month: "6/2023", users: 105 },
-        ])
+        const usersSnapshot = await getDocs(collection(db, "users"))
+        const users = usersSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as User[]
+
+        // Agrupar usuarios por mes de registro
+        const usersByMonth: Record<string, number> = {}
+        users.forEach(user => {
+          const date = user.createdAt?.toDate() || new Date()
+          const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`
+          
+          if (!usersByMonth[monthYear]) {
+            usersByMonth[monthYear] = 0
+          }
+          usersByMonth[monthYear]++
+        })
+
+        // Convertir a formato para gráfico
+        const activeUsersData = Object.entries(usersByMonth)
+          .map(([month, users]) => ({
+            month,
+            users
+          }))
+          .sort((a, b) => {
+            const [aMonth, aYear] = a.month.split("/")
+            const [bMonth, bYear] = b.month.split("/")
+
+            if (aYear !== bYear) {
+              return Number.parseInt(aYear) - Number.parseInt(bYear)
+            }
+
+            return Number.parseInt(aMonth) - Number.parseInt(bMonth)
+          })
+
+        setActiveUsers(activeUsersData)
       } catch (error) {
         console.error("Error al cargar datos de reportes:", error)
       } finally {
