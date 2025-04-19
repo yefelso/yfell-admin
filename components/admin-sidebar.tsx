@@ -18,6 +18,19 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
+
+// Colores para los iconos
+const ICON_COLORS = {
+  dashboard: "#FF6B35", // Naranja principal
+  productos: "#FFA630", // Naranja claro
+  usuarios: "#FFD166", // Amarillo cálido
+  compras: "#06D6A0", // Verde turquesa
+  carritos: "#118AB2", // Azul turquesa
+  stock: "#EF476F", // Rosa coral
+  reportes: "#FF6B35", // Naranja principal
+  configuracion: "#FFA630", // Naranja claro
+}
 
 export function AdminSidebar() {
   const pathname = usePathname()
@@ -54,7 +67,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/dashboard")} tooltip="Dashboard">
               <button onClick={() => router.push("/admin/dashboard")}>
-                <Home className="h-5 w-5" />
+                <Home className="h-5 w-5" style={{ color: ICON_COLORS.dashboard }} />
                 <span>Dashboard</span>
               </button>
             </SidebarMenuButton>
@@ -63,7 +76,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/productos")} tooltip="Productos">
               <button onClick={() => router.push("/admin/productos")}>
-                <Package className="h-5 w-5" />
+                <Package className="h-5 w-5" style={{ color: ICON_COLORS.productos }} />
                 <span>Productos</span>
               </button>
             </SidebarMenuButton>
@@ -72,7 +85,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/usuarios")} tooltip="Usuarios">
               <button onClick={() => router.push("/admin/usuarios")}>
-                <Users className="h-5 w-5" />
+                <Users className="h-5 w-5" style={{ color: ICON_COLORS.usuarios }} />
                 <span>Usuarios</span>
               </button>
             </SidebarMenuButton>
@@ -81,7 +94,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/compras")} tooltip="Compras">
               <button onClick={() => router.push("/admin/compras")}>
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5" style={{ color: ICON_COLORS.compras }} />
                 <span>Compras</span>
               </button>
             </SidebarMenuButton>
@@ -90,7 +103,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/carritos")} tooltip="Carritos">
               <button onClick={() => router.push("/admin/carritos")}>
-                <ShoppingBag className="h-5 w-5" />
+                <ShoppingBag className="h-5 w-5" style={{ color: ICON_COLORS.carritos }} />
                 <span>Carritos</span>
               </button>
             </SidebarMenuButton>
@@ -99,7 +112,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/stock")} tooltip="Stock">
               <button onClick={() => router.push("/admin/stock")}>
-                <Box className="h-5 w-5" />
+                <Box className="h-5 w-5" style={{ color: ICON_COLORS.stock }} />
                 <span>Stock</span>
               </button>
             </SidebarMenuButton>
@@ -108,7 +121,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/reportes")} tooltip="Reportes">
               <button onClick={() => router.push("/admin/reportes")}>
-                <BarChart3 className="h-5 w-5" />
+                <BarChart3 className="h-5 w-5" style={{ color: ICON_COLORS.reportes }} />
                 <span>Reportes</span>
               </button>
             </SidebarMenuButton>
@@ -117,7 +130,7 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/configuracion")} tooltip="Configuración">
               <button onClick={() => router.push("/admin/configuracion")}>
-                <Settings className="h-5 w-5" />
+                <Settings className="h-5 w-5" style={{ color: ICON_COLORS.configuracion }} />
                 <span>Configuración</span>
               </button>
             </SidebarMenuButton>

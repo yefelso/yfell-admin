@@ -190,7 +190,15 @@ export default function ComprasPage() {
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id.substring(0, 8)}</TableCell>
+                    <TableCell className="font-medium">
+                      <Button
+                        variant="link"
+                        className="p-0 h-auto font-medium"
+                        onClick={() => router.push(`/admin/compras/${order.id}`)}
+                      >
+                        {order.id.substring(0, 8)}
+                      </Button>
+                    </TableCell>
                     <TableCell>{order.customerName || "Cliente"}</TableCell>
                     <TableCell>{format(new Date(order.createdAt), "dd/MM/yyyy HH:mm")}</TableCell>
                     <TableCell>
@@ -208,7 +216,7 @@ export default function ComprasPage() {
                         {order.status || "pendiente"}
                       </Badge>
                     </TableCell>
-                    <TableCell>{formatCurrency(order.total || 0)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(order.total || 0)}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
